@@ -4,7 +4,8 @@ var shapefile = require("shapefile");
 var turf = require('turf');
 var fs = require('fs');
 var geojsonCoords = require('geojson-coords');
-var fileName, selectedFiles;
+var fileName, selectedFiles, resultRaw, coordRaw, polygon;
+var arrs = [];
 
 /**
 //  minimize
@@ -62,7 +63,36 @@ $("#addLayer").click(function() {
                 .then(source => source.read()
                     .then(function log(result) {
                         if (result.done) return;
-                        console.log(result.value);
+                        resultRaw = result.value;
+                        coordRaw = geojsonCoords(resultRaw);
+
+                        for (var i = 0; i < coordRaw.length; i++) {
+                            arrs[i] = {
+                                altitude: 0,
+                                latitude: coordRaw[i][1],
+                                longitude: coordRaw[i][0]
+                            };
+                        }
+                        console.log(arrs);
+                        polygon = turf.polygon([coordRaw], {
+                            areaOfInterest: arrs,
+                            name: 'poly1',
+                            locationName: "Setiabudi, Special Capital Region of Jakarta, ID",
+                            params: {
+                                droneType: "Inspire_1",
+                                name: "sdsadasdasda",
+                                alt: 99,
+                                hOverlap: 60,
+                                vOverlap: 70
+                            }
+                        });
+                        console.log(JSON.stringify(polygon, undefined, 2));
+                        var colP = turf.featureCollection(polygon);
+                        var tem = JSON.stringify(polygon, undefined, 2);
+                        fs.writeFile('helloworld.geojson', tem, function(err) {
+                            if (err) return console.log(err);
+                            console.log('Hello World > helloworld.txt');
+                        });
                         return source.read().then(log);
                     }))
                 .catch(error => console.error(error.stack));
