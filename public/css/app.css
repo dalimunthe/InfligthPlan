@@ -1,0 +1,13 @@
+span#min-btn {
+color:#34c84a;
+}
+span.jones {
+color:#dedede;
+}
+
+span#min-btn:hover {
+color:#323232;
+}
+span.jones:hover {
+color:#222222;
+}

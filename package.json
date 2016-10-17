@@ -18,5 +18,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.4.1"
+  },
+  "dependencies": {
+    "geojson-coords": "0.0.0",
+    "shapefile": "^0.5.7",
+    "turf": "^3.0.14"
   }
 }
