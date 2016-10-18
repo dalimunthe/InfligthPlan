@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>InFligth Plan Maker</title>
     <!-- Stylesheets -->
@@ -12,11 +13,12 @@
             module = undefined;
         }
     </script>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="window">
-      <header class="toolbar toolbar-header" style="-webkit-app-region: drag">
-        <h1 class="title" style="padding-right:10px;">
+        <header class="toolbar toolbar-header" style="-webkit-app-region: drag">
+            <h1 class="title" style="padding-right:10px;">
           InFligth Plan Maker
           <div class="btn-group pull-right">
             <span class="icon icon-record min-btn" id="min-btn" style="color:#34c84a;padding-left:4px;padding-right:4px;"></span>
@@ -24,57 +26,63 @@
             <span class="icon icon-record close-btn" id="close-btn" style="color:#fc605b;padding-left:4px;padding-right:4px;" ></span>
           </div>
         </h1>
-      </header>
+        </header>
 
-      <div class="window-content">
-        <div class="pane-group">
-          <div class="pane pane-sm sidebar">
-            <nav class="nav-group">
-              <h5 class="nav-group-title">Menu</h5>
-              <span id="addLayer" class="nav-group-item">
-                <span class="icon icon-folder"></span>
-                Add Data
-              </span>
-              <hr />
-            </nav>
+        <div class="window-content">
+            <div class="pane-group">
+                <div class="pane pane-sm sidebar">
+                    <nav class="nav-group">
+                        <h5 class="nav-group-title">Menu</h5>
+                        <span id="addLayer" class="nav-group-item">
+                <span class="icon icon-folder"></span> Add Data
+                        </span>
+                        <hr />
+                    </nav>
 
-            <nav class="nav-group">
-              <h5 class="nav-group-title">Configuration</h5>
-              <form style="padding: 2px 10px 2px 25px;">
-                <div class="form-group">
-                  <label>Fligth Plan Name</label>
-                  <input type="text" class="form-control" placeholder="Fligth Plan Name">
+                    <nav class="nav-group">
+                        <h5 class="nav-group-title">Configuration</h5>
+                        <form id="formInput" style="padding: 2px 10px 2px 25px;">
+                            <div class="form-group">
+                                <label>Fligth Plan Name</label>
+                                <input type="text" id="fligthName" class="form-control" placeholder="Fligth Plan Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Altitude</label>
+                                <input type="text" id="height" class="form-control" placeholder="Altitude" value="120">
+                            </div>
+                            <div class="form-actions">
+                                <button id="refreshWin" class="btn btn-form btn-default">Clear</button>
+                                <button id="execute" class="btn btn-form btn-primary">Create</button>
+                            </div>
+                        </form>
+                    </nav>
                 </div>
-                <div class="form-group">
-                  <label>Altitude</label>
-                  <input type="text" class="form-control" placeholder="Altitude">
-                </div>
-                <div class="form-actions">
-                  <button type="submit" class="btn btn-form btn-default">Cancel</button>
-                  <button type="submit" class="btn btn-form btn-primary">OK</button>
-                </div>
-              </form>
-            </nav>
-          </div>
 
-          <div class="pane">
-            <pre id="json"></pre>
-            <pre id="json2"></pre>
-          </div>
+                <div class="pane">
+                    <div class="padded-more">
+                        <h3 id="title"></h3>
+                        <h5 id="pathR"></h5>
+                        <h5 id="path"></h5>
+                        <strong id="detail"></strong>
+                        <p id="area"></p>
+                        <p id="vertex"></p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <script src="public/js/jquery-2.2.4.min.js"></script>
-  </body>
+</body>
 
-  <script>
+<script>
     // You can also require other files to run in this process
     require('./renderer.js')
     require('./map.js')
     require('shapefile')
-  </script>
-  <script>
+</script>
+<script>
     if (window.module) module = window.module;
-  </script>
+</script>
+
 </html>

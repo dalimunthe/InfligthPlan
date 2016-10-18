@@ -4,7 +4,7 @@ var shapefile = require("shapefile");
 var turf = require('turf');
 var fs = require('fs');
 var geojsonCoords = require('geojson-coords');
-var fileName, selectedFiles, resultRaw, coordRaw, polygon;
+var fileName,name, fileNamesReal, fileFullPath, fligthName, height, colP, tem, jsonFile, selectedFiles, resultRaw, coordRaw, polygon, area;
 var arrs = [];
 
 /**
@@ -46,6 +46,7 @@ var arrs = [];
 })();
 
 
+
 $("#addLayer").click(function() {
     dialog.showOpenDialog({
         title: 'Choose Shapefile',
@@ -59,13 +60,17 @@ $("#addLayer").click(function() {
             console.log("No file selected");
         } else {
             console.log(fileNames[0]);
+            fileNamesReal = fileNames[0];
+            fileFullPath = fileNamesReal.substring(0, fileNamesReal.lastIndexOf("\\") + 1);
+            var nameT = fileNamesReal.replace(fileFullPath, "");
+            name = nameT.replace(".shp", "");
             shapefile.open(fileNames[0])
                 .then(source => source.read()
                     .then(function log(result) {
                         if (result.done) return;
                         resultRaw = result.value;
                         coordRaw = geojsonCoords(resultRaw);
-
+                        area = turf.area(resultRaw) / 10000;
                         for (var i = 0; i < coordRaw.length; i++) {
                             arrs[i] = {
                                 altitude: 0,
@@ -73,26 +78,36 @@ $("#addLayer").click(function() {
                                 longitude: coordRaw[i][0]
                             };
                         }
-                        console.log(arrs);
+
+                        $('#fligthName').val(name);
+
+                        height = $('#height').val();
+
+                        //console.log(arrs);
+                        console.log(fileFullPath);
                         polygon = turf.polygon([coordRaw], {
                             areaOfInterest: arrs,
-                            name: 'poly1',
-                            locationName: "Setiabudi, Special Capital Region of Jakarta, ID",
+                            name: fligthName,
+                            locationName: fligthName,
                             params: {
                                 droneType: "Inspire_1",
-                                name: "sdsadasdasda",
-                                alt: 99,
-                                hOverlap: 60,
-                                vOverlap: 70
+                                name: fligthName,
+                                alt: parseInt(height),
+                                hOverlap: 80,
+                                vOverlap: 75
                             }
                         });
+
                         console.log(JSON.stringify(polygon, undefined, 2));
-                        var colP = turf.featureCollection(polygon);
-                        var tem = JSON.stringify(polygon, undefined, 2);
-                        fs.writeFile('helloworld.geojson', tem, function(err) {
-                            if (err) return console.log(err);
-                            console.log('Hello World > helloworld.txt');
-                        });
+                        colP = turf.featureCollection(polygon);
+                        tem = JSON.stringify(polygon, undefined, 2);
+
+
+                        // fs.writeFile(jsonFile, tem, function(err) {
+                        //     if (err) return console.log(err);
+                        //     console.log('Hello World > helloworld.txt');
+                        // });
+
                         return source.read().then(log);
                     }))
                 .catch(error => console.error(error.stack));
@@ -100,15 +115,44 @@ $("#addLayer").click(function() {
     });
 
 
-
-
-
 });
+
+
 
 
 $(document).ready(function() {
 
+  $("#refreshWin").click(function() {
+      remote.getCurrentWindow().reload();
+  });
 
+    $("#execute").click(function() {
+      fligthName = $('#fligthName').val();
+      jsonFile = fileFullPath + fligthName + ".geojson";
+        if ((coordRaw.length < 21) && (area < 121)) {
+            fs.writeFile(jsonFile, tem, function(err) {
+                if (err) return console.log(err);
+                console.log(jsonFile);
+                document.getElementById("title").innerHTML = "Data Successfully Converted";
+                document.getElementById("pathR").innerHTML = "Location";
+                document.getElementById("path").innerHTML = jsonFile;
+                document.getElementById("detail").innerHTML = "Detail";
+                document.getElementById("area").innerHTML = "Total Vertex : "+coordRaw.length;
+                document.getElementById("vertex").innerHTML = "Area : "+Math.round(area * 100) / 100+" Ha";
+            });
+        } else {
+          document.getElementById("title").innerHTML = "Data Failed Convert";
+          $("#pathR").remove();
+          $("#path").remove();
+          document.getElementById("detail").innerHTML = "Detail";
+          document.getElementById("area").innerHTML = "Total Vertex : "+coordRaw.length;
+          document.getElementById("vertex").innerHTML = "Area : "+Math.round(area * 100) / 100+" Ha";
+        }
+    });
+
+    $("#formInput").submit(function(e) {
+        e.preventDefault();
+    });
 
     $('#min-btn,#max-btn,#close-btn').hover(
         function() {
